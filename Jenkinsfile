@@ -51,6 +51,7 @@ pipeline {
                     }
                 }
             }
+        }
         stage('Get Public IP') {
             steps {
                 script {
