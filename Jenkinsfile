@@ -64,7 +64,7 @@ pipeline {
                 script {
                     withCredentials([sshUserPrivateKey(credentialsId: 'ansible', keyFileVariable: 'SSH_KEY')]) {
                         // Run Ansible playbook, using the public IP
-                        sh "ansible-playbook -i ${env.PUBLIC_IP}, semi-colon.yml --extra-vars "target_host=${PUBLIC_IP}" --user azureuser --private-key $SSH_KEY"
+                        sh "ansible-playbook -i ${env.PUBLIC_IP}, semi-colon.yml --extra-vars 'target_host=${env.PUBLIC_IP}' --user azureuser --private-key $SSH_KEY"
                     }
                 }
             }
