@@ -26,7 +26,7 @@ pipeline {
         }
         stage('cd') {
             steps {
-                echo "cd"
+                echo "docker compose"
                 sh "docker compose -f docker-compose.yml down --remove-orphans"
                 sh "docker compose -f docker-compose.yml up -d --build"
             }
