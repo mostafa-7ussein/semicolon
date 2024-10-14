@@ -25,8 +25,8 @@ resource "azurerm_kubernetes_cluster" "semi-colon_aks" {
   depends_on = [azurerm_resource_group.semi-colon_aks_group]
 }
 
-resource "azurerm_kubernetes_cluster_node_pool" "semi-colon_aks_node" {
-  name                  = "semi-colonaksnode"
+resource "azurerm_kubernetes_cluster_node_pool" "semi_colon_aks_node" {
+  name                  = "semiaksnode"
   kubernetes_cluster_id = azurerm_kubernetes_cluster.semi-colon_aks.id
   vm_size               = "Standard_B2s"
   node_count            = 1
