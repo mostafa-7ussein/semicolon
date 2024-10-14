@@ -76,7 +76,7 @@ pipeline {
         //         sh "docker compose -f docker-compose.yml up -d --build"
         //     }
         // }
-    }
+    // }
     post {
         success {
             slackSend(channel: "depi", color: '#00FF00', message: "Succeeded: Job '${env.JOB_NAME} ${env.BUILD_NUMBER}'")
