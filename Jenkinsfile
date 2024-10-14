@@ -43,12 +43,14 @@ pipeline {
                 script {
                     // Set Terraform environment variables
                     withEnv(["TF_VAR_client_id=${AZURE_CLIENT_ID}", "TF_VAR_client_secret=${AZURE_CLIENT_SECRET}", "TF_VAR_tenant_id=${AZURE_TENANT_ID}", "TF_VAR_subscription_id=${AZURE_SUBSCRIPTION_ID}"]) {
-                        sh 'cd terraform && terraform init'
-                        sh 'cd terraform && terraform apply -auto-approve'
+                        // Use sshagent to load SSH credentials
+                        sshagent(['bahnasy']) { 
+                            sh 'cd terraform && terraform init'
+                            sh 'cd terraform && terraform apply -auto-approve'
                         }
+                    }
                 }
             }
-        }
         stage('Get Public IP') {
             steps {
                 script {
