@@ -3,6 +3,9 @@ pipeline {
     stages {
         stage('Preparation') {
             steps {
+                script {
+                    slackSend(channel: 'devops', message: "Starting the pipeline for ${env.JOB_NAME} - Build Number: ${env.BUILD_NUMBER}")
+                }
                 // Checkout the repository from GitHub
                 git(
                     url: 'https://github.com/mostafa-7ussein/semicolonProject',
@@ -56,10 +59,27 @@ pipeline {
             steps {
                 script {
                     // Call Ansible playbook to deploy the production environment
-                        sh "ansible-playbook -i inventory/production playbook.yaml --ssh-extra-args='-o StrictHostKeyChecking=no'"
-
-                    }
+                    sh "ansible-playbook -i inventory/production playbook.yaml --ssh-extra-args='-o StrictHostKeyChecking=no'"
+                }
+            }
+        }
+    }
+    post {
+        success {
+            script {
+                slackSend(channel: '#your-channel', message: "Pipeline ${env.JOB_NAME} - Build Number: ${env.BUILD_NUMBER} succeeded!")
+            }
+        }
+        failure {
+            script {
+                slackSend(channel: '#devops', message: "Pipeline ${env.JOB_NAME} - Build Number: ${env.BUILD_NUMBER} failed!")
+            }
+        }
+        always {
+            script {
+                slackSend(channel: '#devops', message: "Pipeline ${env.JOB_NAME} - Build Number: ${env.BUILD_NUMBER} finished.")
             }
         }
     }
 }
+
