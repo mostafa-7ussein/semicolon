@@ -56,8 +56,9 @@ pipeline {
             steps {
                 script {
                     // Call Ansible playbook to deploy the production environment
-                    sh "ansible-playbook -i inventory/production playbook.yaml"
-                }
+                        sh "ansible-playbook -i inventory/production playbook.yaml --ssh-extra-args='-o StrictHostKeyChecking=no'"
+
+                    }
             }
         }
     }
