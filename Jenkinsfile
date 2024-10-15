@@ -3,11 +3,10 @@ pipeline {
     stages {
         stage('Preparation') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'git-credentials-id', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
                     sh 'git clone https://github.com/mostafa-7ussein/semicolonProject'
                 }
             }
-        }
+        
         stage('Build Docker Image') {
             steps {
                 // Log in to Docker Hub using credentials
