@@ -67,7 +67,7 @@ pipeline {
     post {
         success {
             script {
-                slackSend(channel: '#your-channel', message: "Pipeline ${env.JOB_NAME} - Build Number: ${env.BUILD_NUMBER} succeeded!")
+                slackSend(channel: '#your-channel',color: '#00FF00', message: "Succeeded  ${env.JOB_NAME} - Build Number: ${env.BUILD_NUMBER} succeeded!")
             }
         }
         failure {
@@ -77,7 +77,7 @@ pipeline {
         }
         always {
             script {
-                slackSend(channel: '#devops', message: "Pipeline ${env.JOB_NAME} - Build Number: ${env.BUILD_NUMBER} finished.")
+                slackSend(channel: '#devops', color: '#FF0000', message: "Failed: ${env.JOB_NAME} - Build Number: ${env.BUILD_NUMBER} finished.")
             }
         }
     }
