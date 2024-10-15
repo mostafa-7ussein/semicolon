@@ -1,0 +1,2 @@
+[production]
+ubuntu@16.171.4.122 ansible_ssh_user=ubuntu ansible_ssh_private_key_file=~/Documents/mostafa.pem

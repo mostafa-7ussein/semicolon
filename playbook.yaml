@@ -2,18 +2,60 @@
 - hosts: production
   become: yes
   tasks:
-    - name: Pull the latest Docker images
-      docker_image:
-        name: mostafahu/semicolon-backend-prod
-        tag: latest
-        source: pull
+    - name: Update apt packages
+      apt:
+        update_cache: yes
+        force_apt_get: yes
+        cache_valid_time: 3600
 
-    - name: Remove old containers if they exist
-      docker_container:
-        name: semicolon-backend
-        state: absent
+    - name: Install Docker dependencies
+      apt:
+        name: 
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+        state: present
 
-    - name: Deploy Docker containers using docker-compose
-      docker_compose:
-        project_src: ./
-        restarted: true
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Install Docker
+      apt:
+        name: docker-ce
+        state: present
+        update_cache: yes
+
+    - name: Start and enable Docker service
+      systemd:
+        name: docker
+        enabled: yes
+        state: started
+
+    - name: Install Docker Compose
+      become: true
+      get_url:
+        url: "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-{{ ansible_system }}-{{ ansible_architecture }}"
+        dest: /usr/local/bin/docker-compose
+        mode: '0755'
+
+    - name: Clone the application repository
+      git:
+        repo: 'https://github.com/mostafa-7ussein/semicolonProject'
+        dest: /home/ubuntu/semi-colon-app
+        version: main
+
+    - name: Run Docker Compose for the application
+      shell: |
+        cd /home/ubuntu/semi-colon-app
+        docker-compose down --remove-orphans
+        docker-compose up -d --build
+      args:
+        chdir: /home/ubuntu/semi-colon-app
