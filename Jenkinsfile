@@ -3,8 +3,10 @@ pipeline {
     stages {
         stage('Preparation') {
             steps {
-                    sh 'git clone https://github.com/mostafa-7ussein/semicolonProject'
-                }
+                git(
+                    url: 'https://github.com/mostafa-7ussein/semicolonProject',
+                    branch: 'main'
+                )                }
             }
         stage('test') {
             steps {
@@ -34,8 +36,8 @@ pipeline {
                         sh "docker push ${imageName}"
 
                         // Optionally, tag as 'latest' and push
-                        sh "docker tag ${imageName} hassanbahnasy/semi-colon:latest"
-                        sh "docker push hassanbahnasy/semi-colon:latest"
+                        sh "docker tag ${imageName} mostafahu/semicolon-backend"
+                        sh "docker push mostafahu/semicolon-backend"
 
                         echo "Docker image ${imageName} pushed successfully."
                     } else {
