@@ -32,7 +32,7 @@ pipeline {
                     def imageExists = sh(script: "docker manifest inspect ${imageName}", returnStatus: true)
 
                     // Use Jenkins credentials for Docker Hub login
-                    withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+                    withCredentials([usernamePassword(credentialsId: 'DockerHub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
                         if (imageExists != 0) {
                             // Log in to Docker Hub
                             sh 'echo $PASSWORD | docker login -u $USERNAME --password-stdin'
