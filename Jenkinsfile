@@ -56,7 +56,7 @@ pipeline {
             steps {
                 script {
                     // Call Ansible playbook to deploy the production environment
-                    sh "ansible-playbook -i inventory/production playbook.yml"
+                    sh "ansible-playbook -i inventory/production playbook.yaml"
                 }
             }
         }
