@@ -67,7 +67,7 @@ pipeline {
     post {
         success {
             script {
-                slackSend(channel: '#your-channel',color: '#00FF00', message: "Succeeded  ${env.JOB_NAME} - Build Number: ${env.BUILD_NUMBER} succeeded!")
+                slackSend(channel: '#devops',color: '#00FF00', message: "Succeeded  ${env.JOB_NAME} - Build Number: ${env.BUILD_NUMBER} succeeded!")
             }
         }
         failure {
