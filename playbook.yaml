@@ -1,0 +1,19 @@
+---
+- hosts: production
+  become: yes
+  tasks:
+    - name: Pull the latest Docker images
+      docker_image:
+        name: mostafahu/semicolon-backend-prod
+        tag: latest
+        source: pull
+
+    - name: Remove old containers if they exist
+      docker_container:
+        name: semicolon-backend
+        state: absent
+
+    - name: Deploy Docker containers using docker-compose
+      docker_compose:
+        project_src: ./
+        restarted: true
