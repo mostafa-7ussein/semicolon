@@ -1,7 +1,7 @@
 ---
 - name: Deploy Semi-colon backend
   hosts: "{{ target_host }}"
-  remote_user: azureuser
+  remote_user: ubuntu
   become: true
   tasks:
     - name: Update apt packages
@@ -42,15 +42,16 @@
         state: started
 
     - name: Install Docker Compose
+      become: true
       get_url:
-        url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-`uname -s`-`uname -m`
+        url: "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-{{ ansible_system }}-{{ ansible_architecture }}"
         dest: /usr/local/bin/docker-compose
         mode: '0755'
 
     - name: Clone the application repository
       git:
-        repo: 'https://github.com/Bahnasy2001/semi-colon-pipeline.git'
-        dest: /home/azureuser/semi-colon-app
+        repo: 'https://github.com/mostafa-7ussein/semicolon'
+        dest: /home/ubuntu/semi-colon-app
         version: main
 
     - name: Run Docker Compose for the application
@@ -58,4 +59,4 @@
         docker-compose down --remove-orphans
         docker-compose up -d --build
       args:
-        chdir: /home/azureuser/semi-colon-app
+        chdir: /home/ubuntu/semi-colon-app

@@ -1,5 +1,11 @@
 pipeline {
     agent any
+    environment {
+        // Use the Jenkins secret text credential for AWS
+        AWS_ACCESS_KEY_ID = credentials('aws_access_key_id') // Reference your AWS Access Key ID
+        AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key') // Reference your AWS Secret Access Key
+     
+    }    
     stages {
         stage('Preparation') {
             steps {
@@ -8,7 +14,7 @@ pipeline {
                 }
                 // Checkout the repository from GitHub
                 git(
-                    url: 'https://github.com/mostafa-7ussein/semicolonProject',
+                    url: 'https://github.com/mostafa-7ussein/semicolon',
                     branch: 'main'
                 )
             }
@@ -55,14 +61,49 @@ pipeline {
                 }
             }
         }
-        stage('Deploy to Production') {
-            steps {
-                script {
-                    // Call Ansible playbook to deploy the production environment
-                    sh "ansible-playbook -i inventory/production playbook.yaml --ssh-extra-args='-o StrictHostKeyChecking=no'"
+stage('Provision Infrastructure') {
+    steps {
+        script {
+            // Set Terraform environment variables for AWS
+            withEnv(["TF_VAR_access_key=${AWS_ACCESS_KEY_ID}", "TF_VAR_secret_key=${AWS_SECRET_ACCESS_KEY}"]) {
+                // Use sshagent to load SSH credentials if needed
+                sshagent(['sshagent']) { 
+                    sh 'cd terraform && terraform init'
+                    sh 'cd terraform && terraform apply -auto-approve'
                 }
             }
         }
+    }
+}
+
+        stage('Get Public IP') {
+            steps {
+                script {
+                    def publicIP = sh(script: 'cd terraform && terraform output -json ec2_public_ip', returnStdout: true).trim()
+                    echo "Public IP Address: ${publicIP}"
+                    env.PUBLIC_IP = publicIP
+                }
+            }
+        }
+
+
+                stage('Run Ansible Playbook') {
+            steps {
+                script {
+                    withCredentials([sshUserPrivateKey(credentialsId: 'sshagent', keyFileVariable: 'SSH_KEY')]) {
+                        // Run Ansible playbook, using the public IP
+                        // sh "ansible-playbook -i ${env.PUBLIC_IP}, semi-colon.yml --extra-vars 'target_host=${env.PUBLIC_IP}' --user azureuser --private-key $SSH_KEY"
+                    // sh "chmod 400 id_rsa"
+                    // sh "ansible-playbook -i 172.167.142.78, semi-colon.yml --extra-vars 'target_host=172.167.142.78' --user azureuser --private-key './id_rsa' "
+                        sh "ansible-playbook -i ${env.PUBLIC_IP}, semi-colon.yml --extra-vars 'target_host=${env.PUBLIC_IP}' --user ubuntu --private-key $SSH_KEY -e \"ansible_ssh_common_args='-o StrictHostKeyChecking=no'\""
+                }
+                    }   
+                // ansible-playbook -i 172.167.142.78, semi-colon.yml --extra-vars 'target_host=172.167.142.78' --user azureuser --private-key "~/.ssh/id_rsa"
+            }
+        }
+
+    
+
     }
     post {
         success {
@@ -82,4 +123,3 @@ pipeline {
         }
     }
 }
-
