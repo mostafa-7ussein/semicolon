@@ -74,103 +74,103 @@ pipeline {
 
 
 
-// stage('Provision Infrastructure') {
-//             steps {
-//                 script {
-//                     // Set AWS environment variables (ensure you have these credentials set in Jenkins)
-//                     withEnv(["AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}", "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}" ]) {
-//                         // Use sshagent to load SSH credentials (if needed)
-//                         sshagent(['sshagent']) {
-//                             // Initialize Terraform and apply
-//                             sh 'cd terraform && terraform init'
-//                             sh 'cd terraform && terraform apply -auto-approve'
-//                         }
-//                     }
-//                 }
-//             }
-//         }
-//         stage('Get Public IP') {
-//             steps {
-//                 script {
-//                     // Fetch the public IP address
-//                     def publicIP = sh(script: 'cd terraform && terraform output -json ec2_public_ip ', returnStdout: true).trim()
-//                     echo "Public IP Address: ${publicIP}"
-//                     // Set the public IP as an environment variable for subsequent stages
-//                     env.PUBLIC_IP = publicIP
-//                 }
-//             }
-//         }
-    
-
-
-//                 stage('Run Ansible Playbook') {
-//             steps {
-//                 script {
-//                     withCredentials([sshUserPrivateKey(credentialsId: 'sshagent', keyFileVariable: 'SSH_KEY')]) {
-//                         // Run Ansible playbook, using the public IP
-//                         // sh "ansible-playbook -i ${env.PUBLIC_IP}, semi-colon.yml --extra-vars 'target_host=${env.PUBLIC_IP}' --user azureuser --private-key $SSH_KEY"
-//                     // sh "chmod 400 id_rsa"
-//                     // sh "ansible-playbook -i 172.167.142.78, semi-colon.yml --extra-vars 'target_host=172.167.142.78' --user azureuser --private-key './id_rsa' "
-//                         sh "ansible-playbook -i ${env.PUBLIC_IP}, semi-colon.yml --extra-vars 'target_host=${env.PUBLIC_IP}' --user ubuntu --private-key $SSH_KEY -e \"ansible_ssh_common_args='-o StrictHostKeyChecking=no'\""
-//                 }
-//                     }   
-//                 // ansible-playbook -i 172.167.142.78, semi-colon.yml --extra-vars 'target_host=172.167.142.78' --user azureuser --private-key "~/.ssh/id_rsa"
-//             }
-//         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-       stage('Provision Infrastructure') {
+stage('Provision Infrastructure') {
             steps {
                 script {
-                    // Set AWS environment variables (ensure credentials are set in Jenkins)
-                    withEnv(["AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}", "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}"]) {
-                        // Initialize Terraform and apply infrastructure
-                        sh 'cd terraform && terraform init'
-                        sh 'cd terraform && terraform apply -auto-approve'
+                    // Set AWS environment variables (ensure you have these credentials set in Jenkins)
+                    withEnv(["AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}", "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}" ]) {
+                        // Use sshagent to load SSH credentials (if needed)
+                        sshagent(['ssh-credentials-id']) {
+                            // Initialize Terraform and apply
+                            sh 'cd terraform && terraform init'
+                            sh 'cd terraform && terraform apply -auto-approve'
+                        }
                     }
                 }
             }
         }
-
         stage('Get Public IP') {
             steps {
                 script {
-                    // Fetch the public IP address from Terraform output
-                    def publicIP = sh(script: 'cd terraform && terraform output -json ec2_public_ip', returnStdout: true).trim()
+                    // Fetch the public IP address
+                    def publicIP = sh(script: 'cd terraform && terraform output -json ec2_public_ip ', returnStdout: true).trim()
                     echo "Public IP Address: ${publicIP}"
                     // Set the public IP as an environment variable for subsequent stages
                     env.PUBLIC_IP = publicIP
                 }
             }
         }
+    
 
-        stage('Run Ansible Playbook') {
+
+                stage('Run Ansible Playbook') {
             steps {
                 script {
-                    // Use Jenkins' SSH credentials (store the private key as a secret in Jenkins credentials)
                     withCredentials([sshUserPrivateKey(credentialsId: 'ssh-credentials-id', keyFileVariable: 'SSH_KEY')]) {
-                        // Run the Ansible playbook, passing in the public IP and SSH key
+                        // Run Ansible playbook, using the public IP
+                        // sh "ansible-playbook -i ${env.PUBLIC_IP}, semi-colon.yml --extra-vars 'target_host=${env.PUBLIC_IP}' --user azureuser --private-key $SSH_KEY"
+                    // sh "chmod 400 id_rsa"
+                    // sh "ansible-playbook -i 172.167.142.78, semi-colon.yml --extra-vars 'target_host=172.167.142.78' --user azureuser --private-key './id_rsa' "
                         sh "ansible-playbook -i ${env.PUBLIC_IP}, semi-colon.yml --extra-vars 'target_host=${env.PUBLIC_IP}' --user ubuntu --private-key $SSH_KEY -e \"ansible_ssh_common_args='-o StrictHostKeyChecking=no'\""
-                    }
                 }
+                    }   
+                // ansible-playbook -i 172.167.142.78, semi-colon.yml --extra-vars 'target_host=172.167.142.78' --user azureuser --private-key "~/.ssh/id_rsa"
             }
-        }   
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //    stage('Provision Infrastructure') {
+    //         steps {
+    //             script {
+    //                 // Set AWS environment variables (ensure credentials are set in Jenkins)
+    //                 withEnv(["AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}", "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}"]) {
+    //                     // Initialize Terraform and apply infrastructure
+    //                     sh 'cd terraform && terraform init'
+    //                     sh 'cd terraform && terraform apply -auto-approve'
+    //                 }
+    //             }
+    //         }
+    //     }
+
+    //     stage('Get Public IP') {
+    //         steps {
+    //             script {
+    //                 // Fetch the public IP address from Terraform output
+    //                 def publicIP = sh(script: 'cd terraform && terraform output -json ec2_public_ip', returnStdout: true).trim()
+    //                 echo "Public IP Address: ${publicIP}"
+    //                 // Set the public IP as an environment variable for subsequent stages
+    //                 env.PUBLIC_IP = publicIP
+    //             }
+    //         }
+    //     }
+
+    //     stage('Run Ansible Playbook') {
+    //         steps {
+    //             script {
+    //                 // Use Jenkins' SSH credentials (store the private key as a secret in Jenkins credentials)
+    //                 withCredentials([sshUserPrivateKey(credentialsId: 'ssh-credentials-id', keyFileVariable: 'SSH_KEY')]) {
+    //                     // Run the Ansible playbook, passing in the public IP and SSH key
+    //                     sh "ansible-playbook -i ${env.PUBLIC_IP}, semi-colon.yml --extra-vars 'target_host=${env.PUBLIC_IP}' --user ubuntu --private-key $SSH_KEY -e \"ansible_ssh_common_args='-o StrictHostKeyChecking=no'\""
+    //                 }
+    //             }
+    //         }
+    //     }   
     
 
     }
