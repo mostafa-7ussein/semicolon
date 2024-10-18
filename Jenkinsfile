@@ -65,11 +65,12 @@ stage('Provision Infrastructure') {
     steps {
         script {
             // Set Terraform environment variables for AWS
-            withEnv(["TF_VAR_access_key=${AWS_ACCESS_KEY_ID}", "TF_VAR_secret_key=${AWS_SECRET_ACCESS_KEY}"]) {
-                // Use sshagent to load SSH credentials if needed
-                sshagent(['sshagent']) { 
-                    sh 'cd terraform && terraform init'
-                    sh 'cd terraform && terraform apply -auto-approve'
+                    withCredentials([string(credentialsId: 'aws_access_key_id', variable: 'AWS_ACCESS_KEY_ID'),
+                                     string(credentialsId: 'aws_secret_access_key', variable: 'AWS_SECRET_ACCESS_KEY')]) {
+                        withEnv(["TF_VAR_access_key=${AWS_ACCESS_KEY_ID}", "TF_VAR_secret_key=${AWS_SECRET_ACCESS_KEY}"]) {
+                            sshagent(['sshagent']) { 
+                                sh 'cd terraform && terraform init'
+                                sh 'cd terraform && terraform apply -auto-approve'
                 }
             }
         }
