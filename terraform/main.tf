@@ -82,16 +82,16 @@ resource "aws_security_group" "example_sg" {
 }
 # Key Pair# 5. Security Group allowing SSH, HTTP, and your application traffic on port 3000
 
-resource "aws_key_pair" "semicolon_key" {
-  key_name   = "example-key"  # Name of the key pair
-  public_key = file("/var/lib/jenkins/privatekeys/id_rsa.pub")  # Path to your public key file
-}
+# resource "aws_key_pair" "semicolon_key" {
+#   key_name   = "example-key"  # Name of the key pair
+#   public_key = file("/home/mostafa/.ssh/id_rsa")  # Path to your public key file
+# }
 
 # 6. EC2 Instance Creation
 resource "aws_instance" "example_ec2" {
   ami           = "ami-0e8d228ad90af673b"  # Ubuntu Server 20.04 LTS in eu-west-2
   instance_type = "t2.micro"
-  key_name      = aws_key_pair.semicolon_key.key_name
+  key_name      = "example-key"
   subnet_id     = aws_subnet.example_subnet.id
   vpc_security_group_ids = [aws_security_group.example_sg.id]
 
@@ -109,6 +109,6 @@ resource "aws_eip" "example_eip" {
 }
 
 output "ec2_public_ip" {
-  value       = aws_instance.example_ec2.public_ip
+  value       = aws_eip.example_eip.public_ip
   description = "The public IP address of the EC2 instance."
 }
