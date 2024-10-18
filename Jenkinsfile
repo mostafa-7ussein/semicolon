@@ -228,7 +228,7 @@ pipeline {
                 script {
                     // Set AWS environment variables (ensure you have these credentials set in Jenkins)
                     // withEnv(["AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}", "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}"]) {
-                    withEnv(["TF_VAR_aws_access_key=${AWS_ACCESS_KEY_ID}", "TF_VAR_aws_secret_key${AWS_SECRET_ACCESS_KEY}"]) {                        
+                    withEnv(["TF_VAR_aws_access_key=${AWS_ACCESS_KEY_ID}", "TF_VAR_aws_secret_key=${AWS_SECRET_ACCESS_KEY}"]) {                        
                         echo "Provisioning infrastructure with Terraform"
                         sshagent(['ssh-credentials-id']) {
                             // Initialize Terraform and apply
