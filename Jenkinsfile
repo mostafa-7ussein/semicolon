@@ -85,6 +85,7 @@ stage('Provision Infrastructure') {
         }
         
         }}
+}
 
         stage('Get Public IP') {
             steps {
