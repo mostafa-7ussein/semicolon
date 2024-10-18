@@ -64,17 +64,27 @@ pipeline {
 stage('Provision Infrastructure') {
     steps {
         script {
-            // Set Terraform environment variables for AWS
-                    withCredentials([string(credentialsId: 'aws_access_key_id', variable: 'AWS_ACCESS_KEY_ID'),
-                                     string(credentialsId: 'aws_secret_access_key', variable: 'AWS_SECRET_ACCESS_KEY')]) {
-                        withEnv(["TF_VAR_access_key=${AWS_ACCESS_KEY_ID}", "TF_VAR_secret_key=${AWS_SECRET_ACCESS_KEY}"]) {
-                            sshagent(['sshagent']) { 
-                                sh 'cd terraform && terraform init'
-                                sh 'cd terraform && terraform apply -auto-approve'
+//             // Set Terraform environment variables for AWS
+//                     withCredentials([string(credentialsId: 'aws_access_key_id', variable: 'AWS_ACCESS_KEY_ID'),
+//                                      string(credentialsId: 'aws_secret_access_key', variable: 'AWS_SECRET_ACCESS_KEY')]) {
+//                         withEnv(["TF_VAR_access_key=${AWS_ACCESS_KEY_ID}", "TF_VAR_secret_key=${AWS_SECRET_ACCESS_KEY}"]) {
+//                             sshagent(['sshagent']) { 
+//                                 sh 'cd terraform && terraform init'
+//                                 sh 'cd terraform && terraform apply -auto-approve'
+//         }
+//     }
+// }
+
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws']]) {
+                    // This block will have the AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY available as environment variables
+                    sh '''
+                    cd terraform
+                    terraform init
+                    terraform apply -var="aws_access_key=${AWS_ACCESS_KEY_ID}" -var="aws_secret_key=${AWS_SECRET_ACCESS_KEY}" -auto-approve
+                    '''
         }
-    }
-}
-        }}}
+        
+        }}
 
         stage('Get Public IP') {
             steps {
