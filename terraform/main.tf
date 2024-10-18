@@ -84,7 +84,7 @@ resource "aws_security_group" "example_sg" {
 
 resource "aws_key_pair" "semicolon_key" {
   key_name   = "example-key"  # Name of the key pair
-  public_key = file("/home/mostafa/.ssh/id_rsa.pub")  # Path to your public key file
+  public_key = file("/var/lib/jenkins/privatekeys/id_rsa.pub")  # Path to your public key file
 }
 
 # 6. EC2 Instance Creation
