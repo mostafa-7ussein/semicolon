@@ -49,7 +49,7 @@ resource "aws_route_table_association" "example_subnet_association" {
 # 5. Security Group allowing SSH and HTTP
 resource "aws_security_group" "example_sg" {
   name        = "example-security-group"
-  description = "Allow SSH and HTTP traffic"
+  description = "Allow SSH, HTTP, and application traffic"
   vpc_id     = aws_vpc.example_vpc.id
 
   ingress {
@@ -66,6 +66,13 @@ resource "aws_security_group" "example_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    from_port   = 3000
+    to_port     = 3000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -73,8 +80,8 @@ resource "aws_security_group" "example_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+# Key Pair# 5. Security Group allowing SSH, HTTP, and your application traffic on port 3000
 
-# Key Pair
 resource "aws_key_pair" "semicolon_key" {
   key_name   = "example-key"  # Name of the key pair
   public_key = file("/home/mostafa/.ssh/id_rsa.pub")  # Path to your public key file
