@@ -79,6 +79,8 @@ stage('Provision Infrastructure') {
                 script {
                     // Set AWS environment variables (ensure you have these credentials set in Jenkins)
                     withEnv(["AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}", "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}" ]) {
+                        echo ${AWS_ACCESS_KEY_ID}
+                        echo ${AWS_SECRET_ACCESS_KEY}
                         // Use sshagent to load SSH credentials (if needed)
                         sshagent(['ssh-credentials-id']) {
                             // Initialize Terraform and apply
