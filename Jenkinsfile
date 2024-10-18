@@ -71,11 +71,10 @@ stage('Provision Infrastructure') {
                             sshagent(['sshagent']) { 
                                 sh 'cd terraform && terraform init'
                                 sh 'cd terraform && terraform apply -auto-approve'
-                }
-            }
         }
     }
 }
+        }}}
 
         stage('Get Public IP') {
             steps {
