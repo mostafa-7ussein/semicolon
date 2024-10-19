@@ -1,7 +1,10 @@
 ---
 - name: Deploy Semi-colon backend
   hosts: "{{ target_host }}"
-  remote_user: ubuntu
+
+  vars:
+  - user_var: user_name
+  remote_user: "{{user_var}}"
   become: true
   tasks:
     - name: Update apt packages
@@ -51,7 +54,7 @@
     - name: Clone the application repository
       git:
         repo: 'https://github.com/mostafa-7ussein/semicolon'
-        dest: /home/ubuntu/semi-colon-app
+        dest: /home/{{user_var}}/semi-colon-app
         version: main
 
     - name: Run Docker Compose for the application
@@ -59,4 +62,4 @@
         docker-compose down --remove-orphans
         docker-compose up -d --build
       args:
-        chdir: /home/ubuntu/semi-colon-app
+        chdir: /home/{{user_var}}/semi-colon-app
