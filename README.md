@@ -171,15 +171,14 @@ post {
   
 - **`variables.tf`**: Defines variables used in the provider configuration for the client ID, secret, tenant, and subscription details. Additionally, a local block defines the resource group and location.
 
-- **`virtual_machine.tf`**:
+- **`main.tf`**:
   - **Resource Group**: Creates the Azure resource group `semi-colon-vm`.
   - **Virtual Network & Subnet**: Defines the network and subnet for the VM.
   - **Public IP**: Allocates a static public IP for the VM.
   - **Network Security Group (NSG)**: Allows inbound SSH connections on port 22 and app traffic on port 3000.
   - **Network Interface**: Attaches the public IP and subnet to the virtual machine.
   - **Virtual Machine (VM)**: Provisions a Linux Ubuntu VM with SSH key authentication using a key stored in Jenkins.
-  
-- **`output.tf`**: Exports the public IP address of the VM.
+  - **output.tf**: Exports the public IP address of the VM.
 
 
 
