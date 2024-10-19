@@ -172,7 +172,7 @@ post {
 - **`variables.tf`**: Defines variables used in the provider configuration for the client ID, secret, tenant, and subscription details. Additionally, a local block defines the resource group and location.
 
 - **`main.tf`**:
-  - **Resource Group**: Creates the Azure resource group `semi-colon-vm`.
+  - **Resource Group**: Creates the aws resource group `semi-colon-vm`.
   - **Virtual Network & Subnet**: Defines the network and subnet for the VM.
   - **Public IP**: Allocates a static public IP for the VM.
   - **Network Security Group (NSG)**: Allows inbound SSH connections on port 22 and app traffic on port 3000.
@@ -186,7 +186,7 @@ post {
 
 #### Variables:
 - `target_host`: The target host where the playbook will be executed (i.e., the public IP of the Azure virtual machine).
-- `remote_user`: The user used to connect to the VM (in this case, `azureuser`).
+- `remote_user`: The user used to connect to the VM (in this case, `ubuntu`).
 
 #### Playbook Breakdown:
 
@@ -267,7 +267,7 @@ post {
    ```yaml
    git:
      repo: 'https://github.com/Bahnasy2001/semi-colon-pipeline.git'
-     dest: /home/azureuser/semi-colon-app
+     dest: /home/ubuntu/semi-colon-app
      version: main
    ```
 
@@ -279,7 +279,7 @@ post {
      docker-compose down --remove-orphans
      docker-compose up -d --build
    args:
-     chdir: /home/azureuser/semi-colon-app
+     chdir: /home/ubuntu/semi-colon-app
    ```
 
 
