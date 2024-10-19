@@ -6,7 +6,7 @@ resource "aws_vpc" "example_vpc" {
   enable_dns_support   = true
   enable_dns_hostnames = true
   tags = {
-    Name = "semicolon-vpc"
+    Name = "example-vpc"
   }
 }
 
@@ -17,7 +17,7 @@ resource "aws_subnet" "example_subnet" {
   availability_zone = "eu-west-2a"  # Updated to correct availability zone
   map_public_ip_on_launch = true
   tags = {
-    Name = "semicolon-subnet"
+    Name = "example-subnet"
   }
 }
 
@@ -25,7 +25,7 @@ resource "aws_subnet" "example_subnet" {
 resource "aws_internet_gateway" "example_igw" {
   vpc_id = aws_vpc.example_vpc.id
   tags = {
-    Name = "semicolon-igw"
+    Name = "example-igw"
   }
 }
 
@@ -37,7 +37,7 @@ resource "aws_route_table" "example_route_table" {
     gateway_id = aws_internet_gateway.example_igw.id
   }
   tags = {
-    Name = "semicolon-route-table"
+    Name = "example-route-table"
   }
 }
 
@@ -83,7 +83,7 @@ resource "aws_security_group" "example_sg" {
 # Key Pair# 5. Security Group allowing SSH, HTTP, and your application traffic on port 3000
 
 resource "aws_key_pair" "semicolon_key" {
-  key_name   = "semicolon-key"  # Name of the key pair
+  key_name   = "example-key"  # Name of the key pair
   public_key = file("/var/lib/jenkins/privatekeys/id_rsa.pub")  # Path to your public key file
 }
 
@@ -98,7 +98,7 @@ resource "aws_instance" "example_ec2" {
   depends_on = [aws_security_group.example_sg]
 
   tags = {
-    Name = "semicolon-ec2"
+    Name = "example-ec2"
   }
 }
 
