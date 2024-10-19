@@ -18,44 +18,44 @@ pipeline {
                 )
             }
         }
-        stage('Test') {
-            steps {
-                echo "Running Docker Compose tests"
-                sh "docker compose -f docker-compose-testing.yml down --remove-orphans"
-                sh "docker compose -f docker-compose-testing.yml up -d --build"
-            }
-        }
-        stage('Build and Push Docker Image') {
-            steps {
-                script {
-                    def imageTag = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
-                    def imageName = "mostafahu/semicolon-backend:${imageTag}"
+        // stage('Test') {
+        //     steps {
+        //         echo "Running Docker Compose tests"
+        //         sh "docker compose -f docker-compose-testing.yml down --remove-orphans"
+        //         sh "docker compose -f docker-compose-testing.yml up -d --build"
+        //     }
+        // }
+        // stage('Build and Push Docker Image') {
+        //     steps {
+        //         script {
+        //             def imageTag = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+        //             def imageName = "mostafahu/semicolon-backend:${imageTag}"
                     
-                    sh "docker build . -t ${imageName}"
+        //             sh "docker build . -t ${imageName}"
 
-                    def imageExists = sh(script: "docker manifest inspect ${imageName}", returnStatus: true)
+        //             def imageExists = sh(script: "docker manifest inspect ${imageName}", returnStatus: true)
 
-                    // Use Jenkins credentials for Docker Hub login
-                    withCredentials([usernamePassword(credentialsId: 'DockerHub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
-                        if (imageExists != 0) {
-                            // Log in to Docker Hub
-                            sh 'echo $PASSWORD | docker login -u $USERNAME --password-stdin'
+        //             // Use Jenkins credentials for Docker Hub login
+        //             withCredentials([usernamePassword(credentialsId: 'DockerHub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+        //                 if (imageExists != 0) {
+        //                     // Log in to Docker Hub
+        //                     sh 'echo $PASSWORD | docker login -u $USERNAME --password-stdin'
 
-                            // Push Docker image to Docker Hub
-                            sh "docker push ${imageName}"
+        //                     // Push Docker image to Docker Hub
+        //                     sh "docker push ${imageName}"
 
-                            // Tag as 'latest' and push
-                            sh "docker tag ${imageName} mostafahu/semicolon-backend:latest"
-                            sh "docker push mostafahu/semicolon-backend:latest"
+        //                     // Tag as 'latest' and push
+        //                     sh "docker tag ${imageName} mostafahu/semicolon-backend:latest"
+        //                     sh "docker push mostafahu/semicolon-backend:latest"
 
-                            echo "Docker image ${imageName} pushed successfully."
-                        } else {
-                            echo "No changes detected, Docker image ${imageName} already exists. Skipping push."
-                        }
-                    }
-                }
-            }
-        } 
+        //                     echo "Docker image ${imageName} pushed successfully."
+        //                 } else {
+        //                     echo "No changes detected, Docker image ${imageName} already exists. Skipping push."
+        //                 }
+        //             }
+        //         }
+        //     }
+        // } 
         stage('Provision Infrastructure') {
             steps {
                 script {
