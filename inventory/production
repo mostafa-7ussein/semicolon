@@ -1,2 +1,0 @@
-[production]
-16.171.4.122 ansible_user=ubuntu ansible_ssh_private_key_file=/var/lib/jenkins/.ssh/mostafa.pem
